@@ -1,0 +1,32 @@
+{
+  "name": "@podiepanikk/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/index.ts",
+    "build": "node build.mjs",
+    "start": "node dist/index.js",
+    "simulate": "tsx src/sim/simulate.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@podiepanikk/game-engine": "*",
+    "@podiepanikk/shared": "*",
+    "@prisma/client": "5.22.0",
+    "express": "4.21.1",
+    "express-rate-limit": "7.4.1",
+    "helmet": "8.0.0",
+    "prisma": "5.22.0",
+    "socket.io": "4.8.1",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "22.9.0",
+    "esbuild": "0.24.0",
+    "socket.io-client": "4.8.1",
+    "tsx": "4.19.2"
+  }
+}

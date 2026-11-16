@@ -1,0 +1,25 @@
+# Render Blueprint – web service (Docker) + PostgreSQL. Render støtter WebSockets.
+services:
+  - type: web
+    name: podiepanikk
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: 'true'
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false # settes manuelt i Render-dashbordet
+      - key: DATABASE_URL
+        fromDatabase:
+          name: podiepanikk-db
+          property: connectionString
+
+databases:
+  - name: podiepanikk-db
+    plan: basic-256mb
+    databaseName: podiepanikk

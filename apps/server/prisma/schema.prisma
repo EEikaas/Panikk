@@ -1,0 +1,80 @@
+// PODIEPANIKK – databasemodell (PostgreSQL)
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String       @id @default(uuid())
+  username          String       @unique
+  passwordHash      String
+  displayName       String
+  role              String       @default("player")
+  characterId       String       @default("krutt")
+  showOnLeaderboard Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  sessions          Session[]
+  results           GameResult[]
+}
+
+model Session {
+  tokenHash String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Question {
+  id           String   @id
+  text         String
+  options      String[]
+  correctIndex Int
+  category     String
+  difficulty   String
+  language     String   @default("nb")
+  source       String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active, difficulty])
+}
+
+model Game {
+  id          String       @id @default(uuid())
+  code        String
+  mode        String
+  difficulty  String
+  length      String
+  playerCount Int
+  startedAt   DateTime
+  endedAt     DateTime
+  results     GameResult[]
+
+  @@index([endedAt])
+}
+
+model GameResult {
+  id          String  @id @default(uuid())
+  gameId      String
+  userId      String?
+  characterId String
+  score       Int
+  rank        Int
+  won         Boolean
+  correct     Int
+  answered    Int
+  totalMs     Int
+  game        Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
